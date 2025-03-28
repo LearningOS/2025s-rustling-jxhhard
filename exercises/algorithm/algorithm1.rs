@@ -2,7 +2,6 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -70,13 +69,31 @@ impl<T> LinkedList<T> {
         }
     }
 	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
+	where 
+		T: Ord + Copy,
 	{
 		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+		let mut list_c = LinkedList::<T>::new();
+		let mut list_a_ptr = list_a.start;
+		let mut list_b_ptr = list_b.start;
+		while list_a_ptr.is_some() && list_b_ptr.is_some(){
+			if unsafe { (*list_a_ptr.unwrap().as_ptr()).val } <= unsafe { (*list_b_ptr.unwrap().as_ptr()).val }{
+				list_c.add(unsafe { (*list_a_ptr.unwrap().as_ptr()).val });
+                list_a_ptr = unsafe { (*list_a_ptr.unwrap().as_ptr()).next };
+			} else {
+                list_c.add(unsafe { (*list_b_ptr.unwrap().as_ptr()).val });
+                list_b_ptr = unsafe { (*list_b_ptr.unwrap().as_ptr()).next };
+            }
+		}
+        while list_a_ptr.is_some(){
+            list_c.add(unsafe { (*list_a_ptr.unwrap().as_ptr()).val });
+            list_a_ptr = unsafe { (*list_a_ptr.unwrap().as_ptr()).next };
         }
+        while list_b_ptr.is_some(){
+            list_c.add(unsafe { (*list_b_ptr.unwrap().as_ptr()).val });
+            list_b_ptr = unsafe { (*list_b_ptr.unwrap().as_ptr()).next };
+        }
+        list_c
 	}
 }
 
